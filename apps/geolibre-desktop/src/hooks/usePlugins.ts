@@ -1,3 +1,4 @@
+import { openHdfSession } from "../lib/hdf-session-client";
 import {
   clearExternalNativePaintBridge,
   setExternalNativePaintBridge,
@@ -1427,6 +1428,7 @@ export function createAppAPI(mapControllerRef?: RefObject<MapEngine | null>) {
       // Legacy projects may not carry a projection preference; default to globe
       // like MapController.enforceProjection so the declared return type holds.
       useAppStore.getState().preferences.map.projection ?? "globe",
+    openHdfSession,
     registerRightPanel,
     unregisterRightPanel,
     openRightPanel,

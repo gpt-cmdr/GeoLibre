@@ -15,7 +15,9 @@
     "./maplibre-vantor/style.css": "./src/plugins/vantor/styles.css",
     "./raster-symbology": "./src/plugins/raster-symbology.ts",
     "./right-panel-registry": "./src/right-panel-registry.ts",
-    "./zarr-time-axis": "./src/plugins/zarr-time-axis.ts"
+    "./zarr-time-axis": "./src/plugins/zarr-time-axis.ts",
+    "./hdf-types": "./src/hdf-types.ts",
+    "./hdf-reader": "./src/plugins/hdf-reader.ts"
   },
   "dependencies": {
     "@carbonplan/zarr-layer": "0.9.1",

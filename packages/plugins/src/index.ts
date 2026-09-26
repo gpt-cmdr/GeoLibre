@@ -1334,3 +1334,13 @@ export {
   type FlightModelConfig,
   type FlightStepResult,
 } from "./plugins/flight-simulator-physics";
+
+export type {
+  HdfSession,
+  HdfReadOptions,
+  HdfSelection,
+  HdfNode,
+  HdfDtype,
+  HdfValue,
+  HdfReadResult,
+} from "./hdf-types";

@@ -25,7 +25,21 @@ HEC-RAS project semantics, dataset paths, UI and conformance adapters belong in 
 plugin repository. Python extraction/publication remains in ras-commander/ras2cng.
 DSS references are recognized but not decoded; model execution/editing is excluded.
 
-No application code is changed in this initial branch. This note is fork-local
-coordination material and should not be included automatically in upstream PRs.
+The branch now exposes an optional version 1 local-Blob HDF session API, sharing
+the existing host h5wasm runtime. Worker cancellation, plugin lifecycle cleanup,
+bounded hyperslabs, expanded-chunk limits and decoded-value budgets keep raw HDF
+access in the host; domain interpretation stays in the external plugin.
+
+Validation includes 139 focused HDF, NetCDF and plugin lifecycle tests, real
+HEC-RAS compound/geometry reads, browser-worker qualification, type checking and
+targeted linting. Full frontend CI produced 9,961 passes, 13 failures and 3 skips.
+All 13 failures reproduced against pristine base `12080a` with independently
+installed dependencies on the same Windows/Node 22.17.1 environment: seven Bash
+packaging cases and six component test files failing in the Vite load hook.
+The full suite is not green on this environment; these baseline failures remain
+separate from the passing focused checks.
+
+This note is fork-local coordination material and should not be included
+automatically in upstream PRs.
 Create focused capability PR branches from current upstream main when ready;
 follow upstream CONTRIBUTING.md and the applicable frontend/browser/CI gates.

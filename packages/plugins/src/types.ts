@@ -1,3 +1,4 @@
+import type { HdfSession, HdfReadOptions } from "./hdf-types";
 import type { JSONSchema, Tool } from "@strands-agents/sdk";
 import type {
   ExternalNativePaintBridge,
@@ -409,6 +410,8 @@ export interface AssistantToolSpec {
 }
 
 export interface GeoLibreAppAPI {
+  /** Local raw HDF5, version 1; host-owned bounded worker, no geographic inference. */
+  openHdfSession?: (source: Blob, options?: HdfReadOptions) => Promise<HdfSession>;
   /** Register an SDK Tool. The host scopes ownership to the calling plugin.
    * Returns a disposer; the host also removes tools on plugin deactivation.
    */

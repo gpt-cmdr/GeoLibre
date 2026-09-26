@@ -1,3 +1,4 @@
+import { scopedHdfOpen, closeHdfSessionsByOwner } from "./hdf-owner-scope";
 import { isPluginEngineSupported } from "./types";
 import {
   getAssistantToolOwnerScope,
@@ -119,6 +120,7 @@ export class PluginManager {
       this.active.delete(id);
     }
     unregisterAssistantToolsByOwner(id);
+    closeHdfSessionsByOwner(id);
     this.plugins.delete(id);
     this.deferredActive.delete(id);
     this.defaultActive.delete(id);
@@ -248,6 +250,7 @@ export class PluginManager {
       activated = plugin.activate(scopedApp);
     } catch (error) {
       unregisterAssistantToolsByOwner(id);
+      closeHdfSessionsByOwner(id);
       restoreDisplaced();
       throw error;
     } finally {
@@ -255,6 +258,7 @@ export class PluginManager {
     }
     if (activated === false) {
       unregisterAssistantToolsByOwner(id);
+      closeHdfSessionsByOwner(id);
       restoreDisplaced();
       return false;
     }
@@ -341,6 +345,7 @@ export class PluginManager {
       }
     }
     unregisterAssistantToolsByOwner(id);
+    closeHdfSessionsByOwner(id);
     this.notify();
     return true;
   }
@@ -359,6 +364,7 @@ export class PluginManager {
       plugin.deactivate(this.scopeAppToPlugin(app, id));
     } finally {
       unregisterAssistantToolsByOwner(id);
+      closeHdfSessionsByOwner(id);
       this.active.delete(id);
       this.nextActivationGeneration(id);
       this.activationResults.delete(id);
@@ -639,12 +645,14 @@ export class PluginManager {
         activated = plugin.activate(scopedApp);
       } catch (error) {
         unregisterAssistantToolsByOwner(id);
+        closeHdfSessionsByOwner(id);
         throw error;
       } finally {
         this.activating.delete(id);
       }
       if (activated === false) {
         unregisterAssistantToolsByOwner(id);
+        closeHdfSessionsByOwner(id);
         continue;
       }
       this.active.add(id);
@@ -726,6 +734,7 @@ function scopeAppToPlugin(
   if (
     !canAddControl &&
     !hasAssistantRegistration &&
+    !app.openHdfSession &&
     !register &&
     !onControlAdded &&
     !onRightPanelOpened &&
@@ -735,6 +744,12 @@ function scopeAppToPlugin(
     return app;
 
   const scoped: GeoLibreAppAPI = { ...app };
+  if (app.openHdfSession)
+    scoped.openHdfSession = scopedHdfOpen(
+      pluginId,
+      app.openHdfSession,
+      () => canAddControl?.() !== false,
+    );
   if (!assistantTools) {
     // Registration is activation-only, so a non-activation scope does not carry
     // it at all rather than handing back the host's unscoped implementation.
