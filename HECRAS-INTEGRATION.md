@@ -13,8 +13,8 @@ Base commit: `12080a1757149e1d06853619be026d153a46d292` (2026-09-26).
 ## Fork scope
 
 Keep changes here small and general: external-plugin file intake and bounded
-HDF dataset access, with host-owned worker/decoder lifecycle. Exact APIs follow
-a real-fixture spike. Existing NetCDF grid APIs are not necessarily sufficient
+HDF dataset access, with host-owned worker/decoder lifecycle. The version 1 API
+was established through real-fixture checks. Existing NetCDF grid APIs are not necessarily sufficient
 for unstructured HEC-RAS mesh connectivity and non-grid datasets.
 
 The private `@geolibre/plugins` source export `./local-netcdf` is not an external
@@ -38,6 +38,20 @@ installed dependencies on the same Windows/Node 22.17.1 environment: seven Bash
 packaging cases and six component test files failing in the Vite load hook.
 The full suite is not green on this environment; these baseline failures remain
 separate from the passing focused checks.
+
+A second optional capability persists bounded JSON at `layer.metadata.user[namespace]`
+through `getLayerUserMetadata` and `setLayerUserMetadata`. Six focused tests verify
+isolation, input limits and the actual host save/reopen/share-redaction path;
+full desktop typechecking and touched-file lint/format passed.
+
+The paired plugin first-pass implementation is `gpt-cmdr/geolibre-hecras` commit
+`9db32ce` on the same branch name. It owns project metadata, HEC-RAS interpretation,
+CRS conversion, GIS materialization and ras2cng manifest adaptation. An actual-host
+reader/store/serializer check produced an 8,157,861-byte two-layer project with
+3,359 features per layer, below the 10 MiB autosave cap. A fresh host-only process
+reopened values and provenance without the plugin. Browser autosave invocation,
+native Tauri and final installed-package UI requalification remain unverified;
+see the plugin's VALIDATION.md for the precise evidence boundary.
 
 This note is fork-local coordination material and should not be included
 automatically in upstream PRs.
