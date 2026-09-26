@@ -23,6 +23,15 @@ import type { GeoLibreToolbarLabel } from "./toolbar-menu-label";
 
 export type GeoLibreMapControlPosition = "top-left" | "top-right" | "bottom-left" | "bottom-right";
 
+/** Portable JSON data; excludes live handles, buffers, and executable values. */
+export type JsonValue =
+  | null
+  | boolean
+  | number
+  | string
+  | JsonValue[]
+  | { [key: string]: JsonValue };
+
 export type GeoLibreBuiltInMapControl =
   | "navigation"
   | "fullscreen"
@@ -431,6 +440,10 @@ export interface GeoLibreAppAPI {
   addGeoJsonLayer: (name: string, data: FeatureCollection, sourcePath?: string) => string;
   listLayers?: () => GeoLibreLayerSummary[];
   getLayerFeatures?: (layerId: string) => Feature<Geometry | null>[];
+  /** Return an isolated copy of a layer's portable metadata namespace. */
+  getLayerUserMetadata?: (layerId: string, namespace: string) => JsonValue | undefined;
+  /** Persist bounded JSON under metadata.user[namespace]; false for invalid data or unknown layers. */
+  setLayerUserMetadata?: (layerId: string, namespace: string, value: JsonValue) => boolean;
   getSelectedFeatures?: () => Feature<Geometry | null>[];
   getSelectedLayerId?: () => string | null;
   readRasterWindow?: (

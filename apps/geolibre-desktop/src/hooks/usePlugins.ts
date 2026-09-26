@@ -1,4 +1,5 @@
 import { openHdfSession } from "../lib/hdf-session-client";
+import { createPluginLayerMetadata } from "../lib/plugin-layer-metadata";
 import {
   clearExternalNativePaintBridge,
   setExternalNativePaintBridge,
@@ -949,6 +950,7 @@ export function createAppAPI(mapControllerRef?: RefObject<MapEngine | null>) {
       return id;
     },
     ...createPluginLayerQueries(),
+    ...createPluginLayerMetadata(),
     addTileLayer: (name: string, url: string, options?: GeoLibreTileLayerOptions) =>
       store.addTileLayer(
         name,

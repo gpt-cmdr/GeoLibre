@@ -104,6 +104,8 @@ export interface GeoLibreAppAPI {
   addGeoJsonLayer: (name: string, data: FeatureCollection, sourcePath?: string) => string;
   listLayers?: () => GeoLibreLayerSummary[];
   getLayerFeatures?: (layerId: string) => Feature<Geometry | null>[];
+  getLayerUserMetadata?: (layerId: string, namespace: string) => JsonValue | undefined;
+  setLayerUserMetadata?: (layerId: string, namespace: string, value: JsonValue) => boolean;
   getSelectedFeatures?: () => Feature<Geometry | null>[];
   getSelectedLayerId?: () => string | null;
   // Sample a raster layer over a geographic window. See "Sampling raster
@@ -513,6 +515,23 @@ only the most recently selected feature. Features without a GeoJSON `id` are
 matched using their zero-based array index converted to a string. An empty
 selection returns an empty array. `getLayerFeatures` throws when the layer id is
 unknown and returns an empty array for a layer that has no GeoJSON features.
+
+Plugins can store portable units, provenance, and other JSON data with
+`app.setLayerUserMetadata?.(layerId, "my-plugin", { units: "m" })` and retrieve
+an isolated copy with `getLayerUserMetadata`. Data lives under
+`layer.metadata.user[namespace]`, preserving unrelated namespaces and core metadata.
+It survives project save/reopen and follows the existing credential redaction
+policy when sharing. Do not store credentials, source handles, or binary data.
+Credential-like keys, URL credentials, and deeply nested configuration remain
+subject to the host's existing sharing redaction rules.
+
+Each value is limited to 256 KiB of UTF-8 JSON, depth 32, and 10,000 JSON nodes.
+Only finite numbers, strings, booleans, null, dense arrays, and plain data objects
+are accepted; cycles, accessors, class instances, functions, and buffers are rejected.
+Namespaces contain 1–128 ASCII letters/digits/dots/underscores/hyphens and start
+with a letter or digit. `__proto__`, `constructor`, and `prototype` are forbidden
+as namespaces and object keys. Writes return false on invalid input or a missing
+layer; reads return undefined for absent/invalid data. Null is a stored value.
 
 Selection subscriptions fire after the selected layer or selected feature-id
 array changes. Keep and call the returned unsubscribe function during plugin
