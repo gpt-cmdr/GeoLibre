@@ -416,6 +416,8 @@ async function readFeaturesInView(
     );
     return null;
   }
+  // A full page cannot tell "cut off" from "exactly the limit", so the
+  // messages below say the view may hold more rather than that it does.
   return { collection, truncated: collection.features.length >= ODP_FEATURES_MAX_LIMIT };
 }
 
@@ -453,7 +455,7 @@ async function addFeaturesLayer(
     result.truncated
       ? tr(
           "featuresAddedTruncated",
-          "Added the first {{count}} features in the map view. Zoom in, or use Add to map for the whole dataset as vector tiles.",
+          "Added {{count}} features, the most one read returns, so the map view may hold more. Zoom in, or use Add to map for the whole dataset as vector tiles.",
           { count },
         )
       : tr("featuresAdded", "Added {{count}} features.", { count }),
@@ -491,7 +493,7 @@ async function downloadGeoJson(
     result.truncated
       ? tr(
           "savedTruncated",
-          "Saved {{name}} with the first {{count}} features in the map view. Zoom in to save the rest.",
+          "Saved {{name}} with {{count}} features, the most one read returns, so the map view may hold more. Zoom in to save the rest.",
           { name, count },
         )
       : tr("saved", "Saved {{name}} ({{count}} features).", { name, count }),
